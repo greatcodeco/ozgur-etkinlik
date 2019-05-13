@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block body %}
+    <h1>Eventler</h1>
+
+    {% if event %}
+        {% for e in event %}
+        
+        <div style="background-color:grey;">
+            {{ e.id }}
+            <br>
+            {{ e.author }}
+            <br>
+            <a href="/events/event/{{ e.id }}">{{ e.title }}</a>
+            <a href="/events/registerEvent/{{ e.id }}" class="btn btn-danger">Kayıt</a></td>
+            <br>
+            {{ e.starter_date }}
+        </div>
+        <hr>
+
+        {% endfor %}
+    
+    {% else %}
+    
+      <div class="alert alert-danger">
+          Herhangi Bir Görev Bulunmuyor ! 
+      </div>
+    
+{% endif %}
+
+{% endblock body%}

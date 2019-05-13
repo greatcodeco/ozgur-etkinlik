@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+{% load crispy_forms_tags %}
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+            <h3>Etkinliği Güncelle</h3>
+            <hr>
+    
+            <form method="post">
+                {% csrf_token %}
+
+                {{ form.media }}
+
+                {{ form|crispy }}
+                <br>
+                <button type="submit" class="btn btn-danger">Onayla</button>
+            </form>
+
+    </div>
+</div>
+
+{% endblock body %}
