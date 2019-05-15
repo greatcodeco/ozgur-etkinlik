@@ -16,8 +16,8 @@ def events(request):
     return render(request, 'events.html', {'event': event})
 
 
-def detail(request, id):
-    event = get_object_or_404(Event, id=id)
+def detail(request, slug):
+    event = get_object_or_404(Event, slug=slug)
     return render(request, 'detail.html', {'event': event})
 
 
@@ -47,8 +47,8 @@ def addevent(request):
 
 
 @login_required(login_url='/user/login/')
-def updateEvent(request, id):
-    event = get_object_or_404(Event, id=id)
+def updateEvent(request, slug):
+    event = get_object_or_404(Event, slug=slug)
     form = EventForm(request.POST or None, instance=event)
     if form.is_valid():
         event = form.save(commit=False)
@@ -60,15 +60,15 @@ def updateEvent(request, id):
 
 
 @login_required(login_url='/user/login/')
-def deleteEvent(request, id):
-    event = get_object_or_404(Event, id=id)
+def deleteEvent(request, slug):
+    event = get_object_or_404(Event, slug=slug)
     event.delete()
     return redirect('profile')
 
 
 @login_required(login_url='/user/login/')
-def registerEvent(request, id):
-    event = get_object_or_404(Event, id=id)
+def registerEvent(request, slug):
+    event = get_object_or_404(Event, slug=slug)
     event_member = EventMember.objects.filter(event=event, user=request.user)
     if not event_member.exists():
         EventMember.objects.create(event=event, user=request.user)
