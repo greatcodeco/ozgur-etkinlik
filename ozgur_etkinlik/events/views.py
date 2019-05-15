@@ -1,7 +1,10 @@
-from django.shortcuts import render, HttpResponse, redirect, get_object_or_404, HttpResponseRedirect, reverse
+from django.shortcuts import render, redirect, get_object_or_404, HttpResponseRedirect
+from django.http import HttpResponseForbidden
+
 from .models import Event, EventMember
 from .forms import EventForm
 from django.contrib import messages
+
 from django.contrib.auth.decorators import login_required
 
 from django.urls import reverse_lazy
@@ -13,9 +16,9 @@ def index(request):
     return render(request, 'index.html')
 
 
-def events(request):
+def event_list(request):
     event = Event.objects.all()
-    return render(request, 'events.html', {'event': event})
+    return render(request, 'event/event_list.html', {'events': event})
 
 
 @login_required(login_url='/user/login/')
@@ -45,27 +48,32 @@ def event_create(request):
 
 
 def event_detail(request, slug):
-
     event = get_object_or_404(Event, slug=slug)
     return render(request, 'event/event-detail.html', context={'event': event})
 
 
 @login_required(login_url='/user/login/')
-def updateEvent(request, slug):
+def event_update(request, slug):
     event = get_object_or_404(Event, slug=slug)
-    form = EventForm(request.POST or None, instance=event)
+    if request.user != event.user:
+        return HttpResponseForbidden
+    form = EventForm(instance=event, data=request.POST or None,
+                     files=request.FILES or None)  # bloğun içerisindeki değerleri çeker
     if form.is_valid():
-        event = form.save(commit=False)
-        event.author = request.user
-        event.save()
-        return redirect('profile')
+        form.save()
+        msg = 'Tebrikler %s isimli gönderiniz başarı ile güncellendi.' % (event.title)
+        messages.success(request, msg, extra_tags='info')
+        return HttpResponseRedirect(event.get_absolute_url())
+    context = {'form': form, 'event': event}
 
-    return render(request, 'update.html', {'form': form})
+    return render(request, 'event/event-update.html', context)
 
 
 @login_required(login_url='/user/login/')
-def deleteEvent(request, slug):
+def event_delete(request, slug):
     event = get_object_or_404(Event, slug=slug)
+    if request.user != event.user:
+        return HttpResponseForbidden
     event.delete()
     return redirect('profile')
 

@@ -37,11 +37,11 @@ Post List
                     </p>
                 </div>
             </div>
-            {% if request.user == blog.user %}
+            {% if request.user == event.user %}
             <div class="row">
                 <div class="col-lg-3 ">
-                    <a href="{% url 'post-update' blog.slug %}" class=" btn btn-primary">Güncelle</a>
-                    <a href="{% url 'post-delete' blog.slug %}" class=" btn btn-danger">Sil</a>
+                    <a href="{% url 'event-update' event.slug %}" class=" btn btn-primary">Güncelle</a>
+                    <a href="{% url 'event-delete' event.slug %}" class=" btn btn-danger">Sil</a>
                 </div>
             </div>
             {% endif %}

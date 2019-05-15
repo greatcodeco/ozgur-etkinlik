@@ -11,15 +11,20 @@ from location_field.models.plain import PlainLocationField
 # Create your models here.
 
 class Event(models.Model):
-    author = models.ForeignKey("auth.User", on_delete=models.CASCADE, verbose_name="Yazar", default=1)
+    CATEGORY = (
+        (None, 'Lütfen Seçiniz'), ('diğer', 'DİĞER'), ('yazılım', 'YAZILIM'), ('grafik tasarım', 'GRAFIK TASARIM'))
+
+    user = models.ForeignKey("auth.User", on_delete=models.CASCADE, verbose_name="Yazar", default=1)
     title = models.CharField(max_length=50, verbose_name="Başlık")
     content = RichTextField()
     created_date = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma Tarihi")
     starter_date = models.DateTimeField(null=True, blank=True, verbose_name='Başlangıç tarihi')
     finish_date = models.DateTimeField(null=True, blank=True, verbose_name='Bitiş Tarihi')
+    size = models.IntegerField(verbose_name='Katılımcı sayısı', null=True, default=0)
     city = models.CharField(max_length=255, null=True)
-    location = PlainLocationField(based_fields=['city'], zoom=7, null=True)
-    slug = models.SlugField(null=True, unique=True, editable=False, verbose_name='slug')
+    location = PlainLocationField(based_fields=['City'], zoom=7, null=True)
+    slug = models.SlugField(null=True, unique=True, editable=False, verbose_name='Slug')
+    category = models.CharField(choices=CATEGORY, blank=True, null=True, max_length=53, verbose_name='Kategori')
 
     def __str__(self):
         return self.title
