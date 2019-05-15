@@ -4,6 +4,8 @@ from .forms import EventForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
+from django.urls import reverse_lazy
+
 
 # Create your views here.
 
@@ -16,11 +18,6 @@ def events(request):
     return render(request, 'events.html', {'event': event})
 
 
-def detail(request, slug):
-    event = get_object_or_404(Event, slug=slug)
-    return render(request, 'detail.html', {'event': event})
-
-
 @login_required(login_url='/user/login/')
 def profile(request):
     user = Event.objects.filter(author=request.user)
@@ -31,19 +28,26 @@ def profile(request):
 
 
 @login_required(login_url='/user/login/')
-def addevent(request):
-    if request.method == "POST":
-        form = EventForm(request.POST or None)
-
+def event_create(request):
+    form = EventForm()
+    if request.method == 'POST':
+        # print(request.POST)
+        form = EventForm(data=request.POST, files=request.FILES)
         if form.is_valid():
             event = form.save(commit=False)
-            event.author = request.user
+            event.user = request.user
             event.save()
-            return HttpResponseRedirect(reverse('index'))
-    else:
-        form = EventForm()
+            msg = 'Tebrikler <strong> %s </strong> isimli gönderiniz başarı ile oluşturuldu.' % (event.title)
+            messages.success(request, msg, extra_tags='success')
 
-    return render(request, 'addevent.html', {'form': form})
+            return render(request, 'event/event-create.html', context={'form': form})
+    return render(request, 'event/event-create.html', context={'form': form})
+
+
+def event_detail(request, slug):
+
+    event = get_object_or_404(Event, slug=slug)
+    return render(request, 'event/event-detail.html', context={'event': event})
 
 
 @login_required(login_url='/user/login/')

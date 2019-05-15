@@ -9,7 +9,7 @@ admin.site.register(EventMember)
 
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
-    list_display = ["title", "author", "created_date",]
+    list_display = ["title", "author", "created_date", "slug"]
     list_display_links = ["title", "created_date"]
 
     search_fields = ["title"]

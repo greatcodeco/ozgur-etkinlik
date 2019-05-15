@@ -4,17 +4,22 @@ from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify, safe
 from unidecode import unidecode
 from uuid import uuid4
+from django.shortcuts import reverse
+from location_field.models.plain import PlainLocationField
 
 
 # Create your models here.
 
 class Event(models.Model):
-    author = models.ForeignKey("auth.User", on_delete=models.CASCADE, verbose_name="Yazar")
+    author = models.ForeignKey("auth.User", on_delete=models.CASCADE, verbose_name="Yazar", default=1)
     title = models.CharField(max_length=50, verbose_name="Başlık")
     content = RichTextField()
     created_date = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma Tarihi")
-    starter_date = models.CharField(max_length=10, verbose_name="Bitirilmesi Gereken Tarih", default='')
-    slug = models.SlugField(null=True, unique=True, editable=False, default="12")
+    starter_date = models.DateTimeField(null=True, blank=True, verbose_name='Başlangıç tarihi')
+    finish_date = models.DateTimeField(null=True, blank=True, verbose_name='Bitiş Tarihi')
+    city = models.CharField(max_length=255, null=True)
+    location = PlainLocationField(based_fields=['city'], zoom=7, null=True)
+    slug = models.SlugField(null=True, unique=True, editable=False, verbose_name='slug')
 
     def __str__(self):
         return self.title
@@ -22,6 +27,9 @@ class Event(models.Model):
     def get_come_event_count(self):
         etkinlige_gelen = self.event_member.count()
         return etkinlige_gelen
+
+    def get_absolute_url(self):
+        return reverse('post-detail', kwargs={'slug': self.slug})
 
     def get_come_event_object(self):
         data_list = []
