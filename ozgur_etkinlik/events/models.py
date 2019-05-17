@@ -8,8 +8,6 @@ from django.shortcuts import reverse
 from location_field.models.plain import PlainLocationField
 
 
-# Create your models here.
-
 class Event(models.Model):
     CATEGORY = (
         (None, 'Lütfen Seçiniz'), ('diğer', 'DİĞER'), ('yazılım', 'YAZILIM'), ('grafik tasarım', 'GRAFIK TASARIM'))
@@ -68,6 +66,7 @@ class Event(models.Model):
 class EventMember(models.Model):
     user = models.ForeignKey(User, null=True, default=1, related_name='event_member', on_delete=True)
     event = models.ForeignKey(Event, null=True, on_delete=True, related_name='event_member')
+    created_date = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma Tarihi", null=True)
 
     class Meta:
         verbose_name_plural = 'Etkinliğe gelen katılımcılar'

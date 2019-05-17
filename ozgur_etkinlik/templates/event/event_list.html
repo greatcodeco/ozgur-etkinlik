@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Event List
+Post List
 {% endblock %}
 
 {% block ust_icerik %}
@@ -11,34 +11,55 @@ Event List
 
 {% block icerik %}
 <div class="row">
-    <div class="col-lg-12 pull-center">
+    <div class="col-lg-12">
+        <div class="col-lg-8 col-lg-offset-2">
+
+            <div class="row">
+                <div class="col-lg-12">
+                    {{ request.user }}
+
+                </div>
+            </div>
 
 
-        {% for event in events %}
-        <div class="post">
-            <h3><a href="{% url 'event-detail' event.slug %}"> {{ event.title }}</a>
+            {% for event in events %}
+            <div class="post">
+                <h3><a href="#"> {{ event.title }}</a>
+                    <a href="#"
+                       class="add-favorite-button btn btnsm btn-default">
+                        <span class="glyphicon glyphicon-star {% if request.user.username in post.get_added_favorite_user %}active{% endif %}"></span>
+                    </a>
+                    <small style="font-size:small"><span
+                            class="glyphicon glyphicon-time"></span> {{ event.created_date }}
+                    </small>
+                </h3>
+                {% if event.get_image %}
+                <img class="img-responsive" src="{{ event.get_image }}" alt="">
 
-                <small style="font-size:small"><span
-                        class="glyphicon glyphicon-time"></span> {{ event.created_date }}
-                </small>
-            </h3>
-            {% if post.get_image %}
-            <img class="img-responsive" src="{{ event.get_image }}" alt="">
+                {% endif %}
+                <p><span class="glyphicon glyphicon-tree-deciduous"></span> <b>
+                    Yazar: <a
+                        href="#"> {{ event.user.username }}</a></b>
+                    <br>
+                    <span title="Yorum Sayısı">
+                    <span class="glyphicon glyphicon-comment"><b
+                            class="post-comment-count">{{ event.get_comment_count }}</b></span>
+                    </span>
+                    <span url="#" class="post-favorite-span"
+                          title="Favori Sayısı">
+                    <span class="glyphicon glyphicon-star active"><b
+                            class="post-favorite-count">{{ event.get_favorite_count }}</b></span>
+                          </span>
+                </p>
+                <p style="margin-top: 20px;"> {{ event.content|linebreaksbr|truncatechars:250 }}</p>
+            </div>
+            {% empty %}
+            <p>Aradağınız Kiriteder Bir Blog Bulunamadı</p>
+            {% endfor %}
 
-            {% endif %}
-            <p><span class="glyphicon glyphicon-tree-deciduous"></span>
-                <br>
-
-
-            </p>
-            <p style="margin-top: 20px;"> {{ event.content|linebreaksbr|truncatechars:250 }}</p>
         </div>
-        {% empty %}
-        <p>Aradağınız Kiriteder Bir Blog Bulunamadı</p>
-        {% endfor %}
+
     </div>
-
-
 </div>
 </div>
 

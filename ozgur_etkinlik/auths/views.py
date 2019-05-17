@@ -21,7 +21,7 @@ def register(request):
                 login(request, user)
                 return HttpResponseRedirect(reverse('index'))
 
-    return render(request, 'register.html', context={'form': form})
+    return render(request, 'auths/register.html', context={'form': form})
 
 
 def user_login(request):
@@ -35,7 +35,7 @@ def user_login(request):
                 login(request, user)
                 return HttpResponseRedirect(reverse('index'))
 
-    return render(request, 'login.html', context={'form': form})
+    return render(request, 'auths/login.html', context={'form': form})
 
 
 def user_logout(request):
