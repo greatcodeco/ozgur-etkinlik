@@ -1,8 +1,10 @@
-from django.shortcuts import render, redirect, get_object_or_404, HttpResponseRedirect
+from django.shortcuts import render, redirect, get_object_or_404, HttpResponseRedirect, Http404
 from django.http import HttpResponseForbidden
+from django.http import JsonResponse
+from django.template.loader import render_to_string
 
-from .models import Event, EventMember
-from .forms import EventForm
+from .models import Event, EventMember, NewComment
+from .forms import EventForm, CommentForm
 from django.contrib import messages
 
 from django.contrib.auth.decorators import login_required
@@ -47,9 +49,11 @@ def event_create(request):
     return render(request, 'event/event-create.html', context={'form': form})
 
 
+@login_required(login_url='/user/login/')
 def event_detail(request, slug):
+    form = CommentForm()
     event = get_object_or_404(Event, slug=slug)
-    return render(request, 'event/event-detail.html', context={'event': event})
+    return render(request, 'event/event-detail.html', context={'event': event, 'form': form})
 
 
 @login_required(login_url='/user/login/')
@@ -85,3 +89,52 @@ def registerEvent(request, slug):
     if not event_member.exists():
         EventMember.objects.create(event=event, user=request.user)
     return redirect('index')
+
+
+def get_child_comment_form(request):
+    data = {'form_html': ''}
+    pk = request.GET.get('comment_pk')
+    comment = get_object_or_404(NewComment, pk=pk)
+    form = CommentForm()
+    form_html = render_to_string('event/include/comment/comment-child-comment-form.html', context={
+        'form': form,
+        'comment': comment
+    }, request=request)
+
+    data.update({
+        'form_html': form_html
+    })
+
+    return JsonResponse(data=data)
+
+
+def new_add_comment(request, pk, model_type):
+    data = {'is_valid': True, 'blog_comment_html': '', 'model_type': model_type}
+    nesne = None
+    all_comment = None
+    form = CommentForm(data=request.POST)
+
+    if model_type == 'blog':
+        nesne = get_object_or_404(Event, pk=pk)
+    elif model_type == 'comment':
+        nesne = get_object_or_404(NewComment, pk=pk)
+    else:
+        raise Http404
+
+    if form.is_valid():
+        icerik = form.cleaned_data.get('icerik')
+        NewComment.add_comment(nesne, model_type, request.user, icerik)
+
+    ## yorum ekranını güncelleyeceğimiz yer.
+    if model_type == 'comment':
+        nesne = nesne.content_object  # burada eğer gelen nesne comment ise blogu almak için.
+    # tüm yorumlarını tekrardan çekiyoruz.
+    comment_html = render_to_string('event/include/comment/comment-list-partial.html', context={
+        'blog': nesne
+    })
+
+    data.update({
+        'blog_comment_html': comment_html
+    })
+
+    return JsonResponse(data=data)

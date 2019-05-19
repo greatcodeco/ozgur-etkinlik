@@ -8,12 +8,15 @@ from django.shortcuts import reverse
 from location_field.models.plain import PlainLocationField
 import os
 
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
+
 
 def upload_to(instance, filename):
     uzanti = filename.split('.')[-1]
     new_name = "%s.%s" % (str(uuid4()), uzanti)
     unique_id = instance.unique_id
-    return os.path.join('blog', unique_id, new_name)
+    return os.path.join('event', unique_id, new_name)
 
 
 class Event(models.Model):
@@ -25,7 +28,6 @@ class Event(models.Model):
     content = RichTextField()
     created_date = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma Tarihi")
     starter_date = models.DateTimeField(null=True, blank=True, verbose_name='Başlangıç tarihi')
-    finish_date = models.DateTimeField(null=True, blank=True, verbose_name='Bitiş Tarihi')
     size = models.IntegerField(verbose_name='Katılımcı sayısı', null=True, default=0)
     city = models.CharField(max_length=255, null=True)
     location = PlainLocationField(based_fields=['City'], zoom=7, null=True)
@@ -51,6 +53,12 @@ class Event(models.Model):
             data_list.append(obj.user)
         return data_list
 
+    def get_image(self):
+        if self.image:
+            return self.image.url
+        else:
+            return '/media/default/marijuana.jpg'
+
     def get_unique_slug(self):
         sayi = 0
         slug = slugify(unidecode(self.title))
@@ -72,6 +80,12 @@ class Event(models.Model):
 
         super(Event, self).save(*args, **kwargs)
 
+    def get_blog_new_comment(self):
+        content_type = ContentType.objects.get_for_model(self)
+        object_id = self.id
+        all_comment = NewComment.objects.filter(content_type=content_type, object_id=object_id)
+        return all_comment
+
 
 class EventMember(models.Model):
     user = models.ForeignKey(User, null=True, default=1, related_name='event_member', on_delete=True)
@@ -83,3 +97,38 @@ class EventMember(models.Model):
 
     def __str__(self):
         return "{} {}".format(self.user, self.event)
+
+
+class NewComment(models.Model):
+    user = models.ForeignKey(User, null=True, default=1, related_name='+', on_delete=True)
+    is_parent = models.BooleanField(default=False)
+
+    content_type = models.ForeignKey(to=ContentType, null=True, on_delete=True)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+    icerik = models.TextField(verbose_name='Yorum', max_length=1000, blank=False, null=True)
+    comment_date = models.DateTimeField(auto_now_add=True, null=True)
+
+    def __str__(self):
+        username = self.user.username
+        text = "{0} {1}".format(username, self.content_type.model)
+        return text
+
+    class Meta:
+        verbose_name_plural = "İç içe yorum sistemi"
+
+    @classmethod
+    def add_comment(cls, nesne, model_type, user, icerik):
+        content_type = ContentType.objects.get_for_model(nesne.__class__)
+        cls.objects.create(user=user, icerik=icerik, content_type=content_type, object_id=nesne.pk)
+        if model_type == 'comment':
+            nesne.is_parent = True
+            nesne.save()
+
+    def get_child_comment(self):
+        if self.is_parent:
+            content_type = ContentType.objects.get_for_model(self.__class__)
+            all_child_comment = NewComment.objects.filter(content_type=content_type, object_id=self.pk)
+            return all_child_comment
+        return None

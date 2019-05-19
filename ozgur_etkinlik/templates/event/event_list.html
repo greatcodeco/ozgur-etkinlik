@@ -10,58 +10,38 @@ Post List
 
 
 {% block icerik %}
+
 <div class="row">
     <div class="col-lg-12">
-        <div class="col-lg-8 col-lg-offset-2">
 
-            <div class="row">
-                <div class="col-lg-12">
-                    {{ request.user }}
+        {% for event in events %}
 
-                </div>
-            </div>
+        <div class="col-lg-3 post">
+            <h3><a href="{% url 'event-detail' event.slug %}"> {{ event.title }}</a></h3>
 
+            {% if event.get_image %}
+            <img class="img-responsive" src="{{ event.get_image }}" alt="">
 
-            {% for event in events %}
-            <div class="post">
-                <h3><a href="#"> {{ event.title }}</a>
-                    <a href="#"
-                       class="add-favorite-button btn btnsm btn-default">
-                        <span class="glyphicon glyphicon-star {% if request.user.username in post.get_added_favorite_user %}active{% endif %}"></span>
-                    </a>
-                    <small style="font-size:small"><span
-                            class="glyphicon glyphicon-time"></span> {{ event.created_date }}
-                    </small>
-                </h3>
-                {% if event.get_image %}
-                <img class="img-responsive" src="{{ event.get_image }}" alt="">
+            {% endif %}
 
-                {% endif %}
-                <p><span class="glyphicon glyphicon-tree-deciduous"></span> <b>
-                    Yazar: <a
-                        href="#"> {{ event.user.username }}</a></b>
-                    <br>
-                    <span title="Yorum Sayısı">
-                    <span class="glyphicon glyphicon-comment"><b
-                            class="post-comment-count">{{ event.get_comment_count }}</b></span>
-                    </span>
-                    <span url="#" class="post-favorite-span"
-                          title="Favori Sayısı">
-                    <span class="glyphicon glyphicon-star active"><b
-                            class="post-favorite-count">{{ event.get_favorite_count }}</b></span>
-                          </span>
-                </p>
-                <p style="margin-top: 20px;"> {{ event.content|linebreaksbr|truncatechars:250 }}</p>
-            </div>
-            {% empty %}
-            <p>Aradağınız Kiriteder Bir Blog Bulunamadı</p>
-            {% endfor %}
+            <p> Başlangıç tarihi: {{event.starter_date}}</p>
+
+            <a href="#" class="btn btn-info">Favorilere Etkinliklerime Ekle</a>
+
+            <p>Etkinliği oluşturan: <a href="#"> {{event.user}}</a></p>
+
 
         </div>
 
+        {% endfor %}
+
+
     </div>
-</div>
+
+
 </div>
 
 
 {% endblock %}
+
+
