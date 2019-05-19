@@ -6,6 +6,14 @@ from unidecode import unidecode
 from uuid import uuid4
 from django.shortcuts import reverse
 from location_field.models.plain import PlainLocationField
+import os
+
+
+def upload_to(instance, filename):
+    uzanti = filename.split('.')[-1]
+    new_name = "%s.%s" % (str(uuid4()), uzanti)
+    unique_id = instance.unique_id
+    return os.path.join('blog', unique_id, new_name)
 
 
 class Event(models.Model):
@@ -23,6 +31,8 @@ class Event(models.Model):
     location = PlainLocationField(based_fields=['City'], zoom=7, null=True)
     slug = models.SlugField(null=True, unique=True, editable=False, verbose_name='Slug')
     category = models.CharField(choices=CATEGORY, blank=True, null=True, max_length=53, verbose_name='Kategori')
+    image = models.ImageField(default='default/marijuana.jpg', verbose_name='Resim', upload_to=upload_to,
+                              null=True, help_text='Kapak Fotoğrafı Yükleyiniz', blank=True)
 
     def __str__(self):
         return self.title
