@@ -80,11 +80,14 @@ class Event(models.Model):
 
         super(Event, self).save(*args, **kwargs)
 
-    def get_blog_new_comment(self):
+    def get_event_new_comment(self):
         content_type = ContentType.objects.get_for_model(self)
         object_id = self.id
         all_comment = NewComment.objects.filter(content_type=content_type, object_id=object_id)
         return all_comment
+
+    def get_event_comment_count(self):
+        return len(self.get_event_new_comment())
 
 
 class EventMember(models.Model):

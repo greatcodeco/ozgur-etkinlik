@@ -6,10 +6,11 @@ Post List
 
 
 {% block ust_icerik %}
+
 <script type="text/javascript">
     $(document).ready(function () {
         var $window = $(this);
-        var $blog_comment_list = $window.find("#blog-comment-list");
+        var $event_comment_list = $window.find('#event-comment-list');
         $window.on('submit', '.comment-form', function (e) {
             e.preventDefault();
             var $this = $(this);
@@ -18,42 +19,54 @@ Post List
             var $url = $this.attr('action');
 
             $.ajax({
+
                 url: $url,
                 type: $method,
                 dataType: 'json',
                 data: $data,
                 success: function (data) {
-                    $blog_comment_list.html(data.blog_comment_html);
+                    console.log(data.event_comment_html);
+                    if (data.model_type == 'event') {
+
+                        $event_comment_list.html(data.event_comment_html);
+                    }
                     $this.find('#id_icerik').val('');
+
+
                 },
                 error: function () {
-                    alert("Bir hata oluştu.")
+                    alert("Bir hata oluştu")
                 }
-            })
 
+
+            })
         });
-        $window.on('click', '#blog-comment-list div.row a.yanitla-button', function (e) {
+        $window.on('click', '#event-comment-list div.row a.yanitla-button', function (e) {
             e.preventDefault();
             var $this = $(this);
             var $parent = $this.closest('div');
             var $href = $this.attr('href');
-            var $comment_pk = $this.attr('comment_pk');
             $.ajax({
                 url: $href,
                 type: "GET",
-                dataType: "json",
-                data: {comment_pk: $comment_pk},
+                dataTyp: "json",
+                data: {},
                 success: function (data) {
+                    console.log(data);
                     var $form_html = data.form_html;
                     $parent.find('.child-form-container').html($form_html);
                 },
                 error: function () {
 
                 }
+
+
             })
         })
     })
+
 </script>
+
 {% endblock %}
 
 
@@ -120,14 +133,14 @@ Post List
     </div>
 </div>
 
-<div class="row">
-    <h2 class="page-header">Yorumlar ({{ blog.get_blog_comment_count }})</h2>
-    <div class="col-lg-12 col-lg-offset-2" id="blog-comment-list">
-        {% include 'event/include/comment/comment-list-partial.html' with blog=blog %}
+<div class="row pull-center">
+    <h2 class="page-header">Yorumlar ({{ event.get_event_comment_count }})</h2>
+    <div class="col-lg-10 col-lg-offset-2" id="event-comment-list">
+        {% include 'event/include/comment/comment-list-partial.html' with event=event %}
     </div>
     <div class="row" style="margin-top: 50px;">
 
-        <form class="comment-form" action="#" method="post">
+        <form class="comment-form" action="{% url 'new-add-comment' event.pk 'event' %}" method="post">
             {% csrf_token %}
             {% for field in form %}
             <div class="row">
