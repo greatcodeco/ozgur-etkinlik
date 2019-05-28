@@ -93,10 +93,13 @@ def registerEvent(request, slug):
 
 def get_child_comment_form(request):
     data = {'form_html': ''}
+    pk = request.GET.get('comment_pk')
+    comment = get_object_or_404(NewComment, pk=pk)
     form = CommentForm()
     form_html = render_to_string('event/include/comment/comment-child-comment-form.html', context={
         'form': form,
-    })
+        'comment': comment,
+    }, request=request)
 
     data.update({
         'form_html': form_html
@@ -123,13 +126,13 @@ def new_add_comment(request, pk, model_type):
         icerik = form.cleaned_data.get('icerik')
         NewComment.add_comment(nesne, model_type, request.user, icerik)
 
-    ## yorum ekranını güncelleyeceğimiz kısım
+    if model_type == "comment":
+        nesne = nesne.content_object
 
-    if model_type == 'event':
-        comment_html = render_to_string('event/include/comment/comment-list-partial.html', context={'event': nesne})
+    comment_html = render_to_string('event/include/comment/comment-list-partial.html', context={'event': nesne})
 
-        data.update({
-            'event_comment_html': comment_html
-        })
+    data.update({
+        'event_comment_html': comment_html
+    })
 
     return JsonResponse(data=data)

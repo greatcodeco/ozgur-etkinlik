@@ -26,10 +26,8 @@ Post List
                 data: $data,
                 success: function (data) {
                     console.log(data.event_comment_html);
-                    if (data.model_type == 'event') {
 
-                        $event_comment_list.html(data.event_comment_html);
-                    }
+                    $event_comment_list.html(data.event_comment_html);
                     $this.find('#id_icerik').val('');
 
 
@@ -46,11 +44,12 @@ Post List
             var $this = $(this);
             var $parent = $this.closest('div');
             var $href = $this.attr('href');
+            var $comment_pk = $this.attr('comment_pk');
             $.ajax({
                 url: $href,
                 type: "GET",
                 dataTyp: "json",
-                data: {},
+                data: {'comment_pk': $comment_pk},
                 success: function (data) {
                     console.log(data);
                     var $form_html = data.form_html;
