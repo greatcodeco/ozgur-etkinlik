@@ -49,7 +49,6 @@ def event_create(request):
     return render(request, 'event/event-create.html', context={'form': form})
 
 
-@login_required(login_url='/user/login/')
 def event_detail(request, slug):
     form = CommentForm()
     event = get_object_or_404(Event, slug=slug)
