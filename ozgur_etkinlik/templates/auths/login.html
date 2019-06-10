@@ -8,6 +8,8 @@ Login
 
 
 {% block icerik %}
+{% load socialaccount %}
+
 <div class="row">
     <div class="col-lg-5 pull-center">
         {% if form.non_field_errors %}
@@ -45,6 +47,7 @@ Login
             <input type="submit" class="btn btn-sm btn-success pull-right" value="Giriş Yap">
             <span><b>Hesabınız yoksa  <a href="{% url 'register' %}">  Tıklayınız </a></b></span>
         </form>
+        <a class="btn btn-info" href=" {% provider_login_url 'google' %}"> Google ile giriş Yap</a>
     </div>
 </div>
 {% endblock %}
