@@ -14,6 +14,29 @@ Post List
 <div class="row">
     <div class="col-lg-12">
 
+        <div class="row">
+            <div class="col-lg-12">
+                <form class="form-inline" action="{% url 'event-list' %}">
+
+                    {% for foo in form %}
+                    <div class="form-group">
+                        {{ foo }}
+                        {% for error in foo.errors %}
+                        <span class="text-danger"><b>{{ error }}</b></span>
+                        {% endfor %}
+                    </div>
+
+                    {% endfor %}
+
+                    <input type="submit" class="btn btn-success" value="Ara">
+
+                </form>
+
+            </div>
+
+        </div>
+
+
         {% for event in events %}
 
         <div class="col-lg-3 post">
@@ -32,6 +55,9 @@ Post List
 
 
         </div>
+        {% empty %}
+
+        <p class="alert alert-info">Aradağınız Kiriteder Bir Blog Bulunamadı</p>
 
         {% endfor %}
 

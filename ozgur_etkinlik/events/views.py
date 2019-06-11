@@ -6,8 +6,10 @@ from django.template.loader import render_to_string
 from .models import Event, EventMember, NewComment
 from .forms import EventForm, CommentForm
 from django.contrib import messages
+from django.db.models import Q
 
 from django.contrib.auth.decorators import login_required
+from .forms import SearchForm
 
 from django.urls import reverse_lazy
 
@@ -19,8 +21,23 @@ def index(request):
 
 
 def event_list(request):
-    event = Event.objects.all()
-    return render(request, 'event/event_list.html', {'events': event})
+    form = SearchForm(data=request.GET or None)
+    events = Event.objects.all()
+
+    if form.is_valid():
+        search = form.cleaned_data.get('search', None)
+        location = form.cleaned_data.get('location', None)
+        #time = form.cleaned_data.get('time', None)
+        if search:
+            events = events.filter(
+                Q(title__icontains=search) | Q(contentq__icontains=search)).distinct()
+        if location:
+            events = events.filter(location=location)
+        #if time:
+         #   events = events.filter(starter_date=time)
+
+    context = {'events': events, 'form': form}
+    return render(request, 'event/event_list.html', context)
 
 
 @login_required(login_url='/user/login/')
