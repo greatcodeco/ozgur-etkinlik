@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Post List
+Event List
 {% endblock %}
 
 {% block ust_icerik %}
@@ -39,11 +39,11 @@ Post List
 
         {% for event in events %}
 
-        <div class="col-lg-3 post">
+        <div class="col-lg-3 pull-left">
             <h3><a href="{% url 'event-detail' event.slug %}"> {{ event.title }}</a></h3>
 
             {% if event.get_image %}
-            <img class="img-responsive" src="{{ event.get_image }}" alt="">
+            <img width="275" height="208" class="img-responsive" src="{{ event.get_image }}" alt="">
 
             {% endif %}
 
@@ -61,10 +61,35 @@ Post List
 
         {% endfor %}
 
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="col-lg-8 col-lg-offset-2">
+                    {% if events.has_other_pages %}
+                    <ul class="pagination">
+                        {% if events.has_previous %}
+                        <li><a href="?page={{ events.previous_page_number }}">&laquo;</a></li>
+                        {% else %}
+                        <li class="disabled"><span>&laquo;</span></li>
+                        {% endif %}
+                        {% for i in events.paginator.page_range %}
+                        {% if events.number == i %}
+                        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                        {% else %}
+                        <li><a href="?page={{ i }}">{{ i }}</a></li>
+                        {% endif %}
+                        {% endfor %}
+                        {% if events.has_next %}
+                        <li><a href="?page={{ events.next_page_number }}">&raquo;</a></li>
+                        {% else %}
+                        <li class="disabled"><span>&raquo;</span></li>
+                        {% endif %}
+                    </ul>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
 
     </div>
-
-
 </div>
 
 

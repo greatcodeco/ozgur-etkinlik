@@ -20,8 +20,9 @@ Post Create
 <script type="text/javascript" rel="script" src="{% static 'bootstrap-datetime/bootstrap-datetime.js' %}"></script>
 <script type="text/javascript">
     $(function () {
-        $('#datetimepicker11').datetimepicker({});
-        $('#datetimepicker12').datetimepicker({});
+        $('#datetimepicker11').datetimepicker({
+            format: 'DD/MM/YYYY'
+        });
     });
 </script>
 
@@ -44,9 +45,8 @@ Post Create
                 <div class='input-group date' id='datetimepicker11'>
                     <input type='text' class="form-control"/>
                     <span class="input-group-addon">
-                    <span class="glyphicon glyphicon-calendar">
+                        <span class="glyphicon glyphicon-calendar"></span>
                     </span>
-                </span>
                 </div>
             </div>
             {% elif field.name == 'finish_date' %}

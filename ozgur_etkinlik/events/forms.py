@@ -5,7 +5,7 @@ from .models import Event, NewComment
 class EventForm(forms.ModelForm):
     class Meta:
         model = Event
-        fields = ["title", "content", "image", 'category', "starter_date", 'city', 'location']
+        fields = ["title", "content", "image", 'category', "starter_date", 'starter_time', 'city', 'location']
 
     def __init__(self, *args, **kwargs):
         super(EventForm, self).__init__(*args, **kwargs)  # kalıtım aldığı init fonksiyonları
@@ -37,4 +37,4 @@ class SearchForm(forms.Form):
                                widget=forms.TextInput(attrs={'placeholder': 'Location',
                                                              'class': 'form-control'}))
     time = forms.ChoiceField(label='', widget=forms.Select(attrs={'class': 'form-control'}),
-                             choices=TIME, required=True)
+                             choices=TIME, required=False)

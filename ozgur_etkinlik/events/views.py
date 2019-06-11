@@ -5,8 +5,11 @@ from django.template.loader import render_to_string
 
 from .models import Event, EventMember, NewComment
 from .forms import EventForm, CommentForm
+
 from django.contrib import messages
 from django.db.models import Q
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 
 from django.contrib.auth.decorators import login_required
 from .forms import SearchForm
@@ -23,18 +26,27 @@ def index(request):
 def event_list(request):
     form = SearchForm(data=request.GET or None)
     events = Event.objects.all()
+    page = request.GET.get('page', 1)
 
     if form.is_valid():
         search = form.cleaned_data.get('search', None)
         location = form.cleaned_data.get('location', None)
-        #time = form.cleaned_data.get('time', None)
+        # time = form.cleaned_data.get('time', None)
         if search:
             events = events.filter(
                 Q(title__icontains=search) | Q(contentq__icontains=search)).distinct()
         if location:
             events = events.filter(location=location)
-        #if time:
-         #   events = events.filter(starter_date=time)
+        # if time:
+        #   events = events.filter(starter_date=time)
+
+    paginator = Paginator(events, 1)
+    try:
+        events = paginator.page(page)
+    except EmptyPage:
+        events = paginator.page(paginator.num_pages)
+    except PageNotAnInteger:
+        events = paginator.page(1)
 
     context = {'events': events, 'form': form}
     return render(request, 'event/event_list.html', context)
