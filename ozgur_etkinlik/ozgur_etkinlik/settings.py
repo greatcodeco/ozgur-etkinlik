@@ -145,3 +145,8 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
 LOGIN_REDIRECT_URL = 'index'
 LOGOUT_REDIRECT_URL = 'index'
+
+LOCATION_FIELD = {
+    'map.provider': 'openstreetmap',
+    'search.provider': 'nominatim',
+}
