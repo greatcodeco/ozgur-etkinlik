@@ -4,3 +4,4 @@
 * Frontend kısmında [Uğur Yüce](https://github.com/uguryuce)
 * Backend kısmında [Selamet Şamlı](https://github.com/selametsamli)
 * Backend kısmında [Ali İlteriş Keskin](https://github.com/ilteriskeskin)
+* Vicdanı çıkar için el vermez
