@@ -83,8 +83,7 @@ Post List
                 <div class="col-lg-8">
                     <p><span class="glyphicon glyphicon-tree-deciduous"></span> <b>
                         Etkinlik Sahibi: <a
-                            href="#">{{ event.user.userprofile.get_screen_name
-                        }}</a>
+                            href="#">{{ event.user.userprofile.get_screen_name }}</a>
                     </b></p>
                     {% if event.image %}
                     <img class="img-responsive" src="{{ event.image.url }}" alt="">
@@ -109,7 +108,7 @@ Post List
             <div class="row">
                 <div class="col-lg-8">
 
-                    <span>{{event.content}} </span>
+                    <span>{{event.content | safe}} </span>
 
                     <p class="lead">
                         Kategoriler: {{ event.kategoriler.all|join:',' }}

@@ -10,7 +10,6 @@ from django.contrib import messages
 from django.db.models import Q
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-
 from django.contrib.auth.decorators import login_required
 from .forms import SearchForm
 
@@ -54,7 +53,7 @@ def event_list(request):
 
 @login_required(login_url='/user/login/')
 def profile(request):
-    user = Event.objects.filter(author=request.user)
+    user = Event.objects.filter(user=request.user)
     context = {
         "user": user
     }
@@ -65,7 +64,6 @@ def profile(request):
 def event_create(request):
     form = EventForm()
     if request.method == 'POST':
-        # print(request.POST)
         form = EventForm(data=request.POST, files=request.FILES)
         if form.is_valid():
             event = form.save(commit=False)
@@ -73,8 +71,7 @@ def event_create(request):
             event.save()
             msg = 'Tebrikler <strong> %s </strong> isimli gönderiniz başarı ile oluşturuldu.' % (event.title)
             messages.success(request, msg, extra_tags='success')
-
-            return render(request, 'event/event-create.html', context={'form': form})
+            return redirect('/events')
     return render(request, 'event/event-create.html', context={'form': form})
 
 
