@@ -3,6 +3,10 @@ from .models import Event, NewComment
 
 
 class EventForm(forms.ModelForm):
+    starter_date = forms.DateField(input_formats=("%d.%m.%Y",), widget=forms.DateInput(format="%d.%m.%Y"),
+                                   required=True,
+                                   label="Başlangıç Günü")
+
     class Meta:
         model = Event
         fields = ["user", "title", "content", "image", 'category', "starter_date", 'starter_time', 'city', 'location']
@@ -12,6 +16,13 @@ class EventForm(forms.ModelForm):
         for field in self.fields:
             # print(field, self.fields[field])
             self.fields[field].widget.attrs = {'class': 'form-control'}
+        DATEPICKER = {
+            'type': 'text',
+            'class': 'form-control',
+            'autocomplete': 'off'
+        }
+
+        self.fields['starter_date'].widget.attrs.update(DATEPICKER)
 
 
 class CommentForm(forms.ModelForm):

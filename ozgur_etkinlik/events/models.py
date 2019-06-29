@@ -27,8 +27,11 @@ class Event(models.Model):
     title = models.CharField(max_length=50, verbose_name="Başlık")
     content = RichTextField()
     created_date = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma Tarihi")
-    starter_date = models.DateField(null=True, blank=True, verbose_name='Başlangıç günü')
     starter_time = models.TimeField(null=True, verbose_name='Başlangıç saati')
+
+    starter_date = models.DateTimeField(null=True, blank=True, verbose_name='Başlangıç günü')
+
+
     size = models.IntegerField(verbose_name='Katılımcı sayısı', null=True, default=0)
     city = models.CharField(max_length=255, null=True)
     location = PlainLocationField(based_fields=['City'], zoom=7, null=True)
