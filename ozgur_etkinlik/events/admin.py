@@ -1,11 +1,12 @@
 from django.contrib import admin
 
-from .models import Event, EventMember,NewComment
+from .models import Event, EventMember, NewComment, FavoriteEvent
 
 # Register your models here.
 
 admin.site.register(EventMember)
 admin.site.register(NewComment)
+admin.site.register(FavoriteEvent)
 
 
 @admin.register(Event)

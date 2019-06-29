@@ -31,7 +31,6 @@ class Event(models.Model):
 
     starter_date = models.DateField(null=True, blank=True, verbose_name='Başlangıç günü')
 
-
     size = models.IntegerField(verbose_name='Katılımcı sayısı', null=True, default=0)
     city = models.CharField(max_length=255, null=True)
     location = PlainLocationField(based_fields=['City'], zoom=7, null=True)
@@ -56,6 +55,10 @@ class Event(models.Model):
         for obj in qs:
             data_list.append(obj.user)
         return data_list
+
+    def get_favorite_count(self):
+        favori_sayisi = self.favorite_event.count()
+        return favori_sayisi
 
     def get_image(self):
         if self.image:
@@ -92,6 +95,9 @@ class Event(models.Model):
 
     def get_event_comment_count(self):
         return len(self.get_event_new_comment())
+
+    def get_added_favorite_user(self):
+        return self.favorite_event.values_list('user__username', flat=True)
 
 
 class EventMember(models.Model):
@@ -139,3 +145,14 @@ class NewComment(models.Model):
             all_child_comment = NewComment.objects.filter(content_type=content_type, object_id=self.pk)
             return all_child_comment
         return None
+
+
+class FavoriteEvent(models.Model):
+    user = models.ForeignKey(User, null=True, default=1, related_name='favorite_event', on_delete=True)
+    event = models.ForeignKey(Event, null=True, on_delete=True, related_name='favorite_event')
+
+    class Meta:
+        verbose_name_plural = 'Favorilere Eklenen Event'
+
+    def __str__(self):
+        return "{} {}".format(self.user, self.event)

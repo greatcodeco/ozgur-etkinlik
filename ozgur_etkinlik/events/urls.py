@@ -12,6 +12,8 @@ urlpatterns = [
     path('event-detail/<slug:slug>', views.event_detail, name="event-detail"),
     path('registerEvent/<int:id>', views.registerEvent, name="registerEvent"),
 
+    path('add-remove-favorite/<slug:slug>', views.add_or_remove_favorite, name="add-remove-favorite"),
+
     url(r'^new-add-comment/(?P<pk>[0-9]+)/(?P<model_type>[\w]+)/$', views.new_add_comment, name='new-add-comment'),
 
     url(r'^get-child-comment-form/$', views.get_child_comment_form, name='get-child-comment-form'),

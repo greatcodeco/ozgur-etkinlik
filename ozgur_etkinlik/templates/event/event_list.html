@@ -6,6 +6,34 @@ Event List
 
 {% block ust_icerik %}
 
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $(".event").on('click', '.add-favorite-button', function (e) {
+            e.preventDefault();
+            var $this = $(this);
+            var $url = $this.attr('href');
+            $.ajax({
+                url: $url,
+                method: "GET",
+                data: {},
+                success: function (data) {
+                    var response = data.status;
+                    var count = data.count;
+                    var $span = $this.find('span');
+                    if (response === 'added') {
+                        $span.addClass('active');
+                    } else {
+                        $span.removeClass('active');
+                    }
+                    $this.closest('div').find('.event-favorite-count').html(count)
+                }
+            });
+        })
+
+
+</script>
+
 {% endblock %}
 
 
@@ -49,8 +77,12 @@ Event List
 
             <p> Başlangıç tarihi: {{event.starter_date}}</p>
 
-            <a href="#" class="btn btn-info">Favorilere Etkinliklerime Ekle</a>
-
+            <a href="{% url 'add-remove-favorite' event.slug %}"
+               class="add-favorite-button btn btnsm btn-default">
+                <span class="glyphicon glyphicon-star {% if request.user.username in event.get_added_favorite_user %}active{% endif %}"></span>
+            </a>
+            <b
+                    class="post-favorite-count">{{ event.get_favorite_count }}</b>
             <p>Etkinliği oluşturan: <a href="#"> {{event.user}}</a></p>
 
 

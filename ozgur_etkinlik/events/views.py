@@ -3,7 +3,7 @@ from django.http import HttpResponseForbidden
 from django.http import JsonResponse
 from django.template.loader import render_to_string
 
-from .models import Event, EventMember, NewComment
+from .models import Event, EventMember, NewComment,FavoriteEvent
 from .forms import EventForm, CommentForm
 
 from django.contrib import messages
@@ -49,6 +49,22 @@ def event_list(request):
 
     context = {'events': events, 'form': form}
     return render(request, 'event/event_list.html', context)
+
+
+@login_required(login_url=reverse_lazy('user-login'))
+def add_or_remove_favorite(request, slug):
+    data = {'count': 0, 'status': 'deleted'}
+    event = get_object_or_404(Event, slug=slug)
+    favori_event = FavoriteEvent.objects.filter(event=event, user=request.user)
+    if favori_event.exists():  # favoriler içerisinde ise
+        favori_event.delete()
+    else:
+        FavoriteEvent.objects.create(event=event, user=request.user)
+        data.update({'status': 'added'})
+
+    count = event.get_favorite_count()
+    data.update({'count': count})
+    return JsonResponse(data=data)
 
 
 @login_required(login_url='/user/login/')
