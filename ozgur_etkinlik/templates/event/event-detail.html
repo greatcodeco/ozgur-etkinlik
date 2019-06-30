@@ -61,7 +61,31 @@ Post List
 
 
             })
-        })
+        });
+        $(".event").on('click', '.add-favorite-button', function (e) {
+            e.preventDefault();
+            console.log("selam");
+            var $this = $(this);
+            var $url = $this.attr('href');
+            $.ajax({
+                url: $url,
+                method: "GET",
+                data: {},
+                success: function (data) {
+                    var response = data.status;
+                    var count = data.count;
+                    var $span = $this.find('span');
+                    if (response === 'added') {
+                        $span.addClass('active');
+                    } else {
+                        $span.removeClass('active');
+                    }
+                    $this.closest('div').find('.event-favorite-count').html(count)
+                }
+
+            })
+
+        });
     })
 
 </script>
@@ -75,56 +99,65 @@ Post List
 <div class="row">
     <div class="col-lg-12">
         <div class="col-lg-8 col-lg-offset-2">
-            <h2 class="page-header"><a href="{% url 'event-list' %}">
-                <span class="glyphicon glyphicon-circle-arrow-left"></span></a> <a>{{ event.title|upper }}</a>
+            <div class="event">
+                <h2 class="page-header"><a href="{% url 'event-list' %}">
+                    <span class="glyphicon glyphicon-circle-arrow-left"></span></a> <a>{{ event.title|upper }}</a>
 
-            </h2>
-            <div class="row">
-                <div class="col-lg-8">
-                    <p><span class="glyphicon glyphicon-tree-deciduous"></span> <b>
-                        Etkinlik Sahibi: <a
-                            href="#">{{ event.user.userprofile.get_screen_name }}</a>
-                    </b></p>
-                    {% if event.image %}
-                    <img class="img-responsive" src="{{ event.image.url }}" alt="">
-                    {% endif %}
+                </h2>
+                <div class="row">
+                    <div class="col-lg-8">
+                        <p><span class="glyphicon glyphicon-tree-deciduous"></span> <b>
+                            Etkinlik Sahibi: <a
+                                href="#">{{ event.user.userprofile.get_screen_name }}</a>
+                        </b></p>
+                        {% if event.image %}
+                        <img class="img-responsive" src="{{ event.image.url }}" alt="">
+                        {% endif %}
+                    </div>
+                    <div class="col-lg-4 ">
+
+                        <p class="pull-left">{{ event.starter_date }}</p>
+                        <br><br>
+                        <p class="pull-left">{{event.city}} </p>
+                        <br>
+
+                        <a href="#" class="btn btn-success btn-block">Katıl</a>
+
+                        <a href="{% url 'add-remove-favorite' event.slug %}"
+                           class="add-favorite-button btn btnsm btn-default">
+                            <span class="glyphicon glyphicon-star {% if request.user.username in event.get_added_favorite_user %}active{% endif %}"></span>
+                        </a>
+
+                        <span title="Favori Sayısı">
+                <b class="event-favorite-count">{{ event.get_favorite_count }}</b></span> <a href="#"
+                                                                                             class="btn btn-default btn-block">Paylaş</a>
+                        <a href="https://www.facebook.com/sharer/sharer.php?u=http://CodingForEntrepreneurs.com/">
+                            Share on Facebook
+                        </a>
+                        <br>
+                        <a href="https://twitter.com/home?status=I'm%20going%20to%20learn%20to%20Code...%20Come%20build%20an%20web%20apsp%20with%20me!%20%23CFE%20and%20@justinmitchel%20http://codingforentrepreneurs.com/">
+                            Share on Twitter
+                        </a>
+                        <br>
+                        <a href="https://www.linkedin.com/shareArticle?mini=true&url=http://swiftforentrepreneurs.com/&title=Be%20first%20%7C%20Join%20Swift%20for%20Entrepreneurs&summary=Swift%20for%20Entrepreneurs%20is%20a%20project-based%20programming%20course%20for%20non-technical%20founders.%20We'll%20learn%20how%20to%20build%20iOS%20apps%20from%20scratch%20using%20Apple's%20new%20programming%20language:%20Swift.%20Be%20first%20and%20learn%20with%20me!&source=http://swiftforentrepreneurs.com/">
+                            Share on Linkedin
+                        </a>
+                        <br>
+
+                        <hr>
+                        <div style="height: 250px; width:250px; background-color:rosybrown"> HARİTA</div>
+
+                    </div>
                 </div>
-                <div class="col-lg-4 ">
+                <div class="row">
+                    <div class="col-lg-8">
 
-                    <p class="pull-left">{{ event.starter_date }}</p>
-                    <br><br>
-                    <p class="pull-left">{{event.city}} </p>
-                    <br>
+                        <span>{{event.content | safe}} </span>
 
-                    <a href="#" class="btn btn-success btn-block">Katıl</a>
-                    <a href="#" class="btn btn-info btn-block">Favorilerilere ekle</a>
-                    <a href="#" class="btn btn-default btn-block">Paylaş</a>
-                    <a href="https://www.facebook.com/sharer/sharer.php?u=http://CodingForEntrepreneurs.com/">
-Share on Facebook
-</a>
-                    <br>
-                    <a href="https://twitter.com/home?status=I'm%20going%20to%20learn%20to%20Code...%20Come%20build%20an%20web%20apsp%20with%20me!%20%23CFE%20and%20@justinmitchel%20http://codingforentrepreneurs.com/">
-Share on Twitter
-</a>
-                    <br>
-                    <a href="https://www.linkedin.com/shareArticle?mini=true&url=http://swiftforentrepreneurs.com/&title=Be%20first%20%7C%20Join%20Swift%20for%20Entrepreneurs&summary=Swift%20for%20Entrepreneurs%20is%20a%20project-based%20programming%20course%20for%20non-technical%20founders.%20We'll%20learn%20how%20to%20build%20iOS%20apps%20from%20scratch%20using%20Apple's%20new%20programming%20language:%20Swift.%20Be%20first%20and%20learn%20with%20me!&source=http://swiftforentrepreneurs.com/">
-Share on Linkedin
-</a>
-                    <br>
-
-                    <hr>
-                    <div style="height: 250px; width:250px; background-color:rosybrown"> HARİTA</div>
-
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-8">
-
-                    <span>{{event.content | safe}} </span>
-
-                    <p class="lead">
-                        Kategoriler: {{ event.kategoriler.all|join:',' }}
-                    </p>
+                        <p class="lead">
+                            Kategoriler: {{ event.kategoriler.all|join:',' }}
+                        </p>
+                    </div>
                 </div>
             </div>
             {% if request.user == event.user %}
