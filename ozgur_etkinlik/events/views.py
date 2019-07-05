@@ -92,9 +92,13 @@ def event_create(request):
 
 
 def event_detail(request, slug):
+    url = 'https://www.google.com/maps/search/'
+    for i in Event.objects.all():
+        address = i.city
+    url = url + str(address)
     form = CommentForm()
     event = get_object_or_404(Event, slug=slug)
-    return render(request, 'event/event-detail.html', context={'event': event, 'form': form})
+    return render(request, 'event/event-detail.html', context={'event': event, 'form': form, 'url': url})
 
 
 @login_required(login_url='/user/login/')

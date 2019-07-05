@@ -11,7 +11,6 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 
 
-
 def upload_to(instance, filename):
     uzanti = filename.split('.')[-1]
     new_name = "%s.%s" % (str(uuid4()), uzanti)
@@ -33,6 +32,7 @@ class Event(models.Model):
 
     size = models.IntegerField(verbose_name='Katılımcı sayısı', null=True, default=0)
     #city = CountryField(null=True)
+    city = models.CharField(null=True, max_length=255, verbose_name='Adres')
     slug = models.SlugField(null=True, unique=True, editable=False, verbose_name='Slug')
     category = models.CharField(choices=CATEGORY, blank=True, null=True, max_length=53, verbose_name='Kategori')
     image = models.ImageField(default='default/marijuana.jpg', verbose_name='Resim', upload_to=upload_to,
