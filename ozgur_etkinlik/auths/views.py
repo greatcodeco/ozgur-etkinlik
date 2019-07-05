@@ -1,8 +1,10 @@
 from django.shortcuts import render, HttpResponseRedirect, get_object_or_404, reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from .forms import RegisterForm, LoginForm
+from .forms import RegisterForm, LoginForm, UserProfileUpdateForm
 from django.contrib.auth.models import User
+
+from events.models import Event, FavoriteEvent
 
 
 # Create your views here.
@@ -41,3 +43,47 @@ def user_login(request):
 def user_logout(request):
     logout(request)
     return HttpResponseRedirect(reverse('index'))
+
+
+def user_profile(request, username):
+    user = get_object_or_404(User, username=username)
+    event_list = Event.objects.filter(user=user)
+    event_list_count = event_list.count()
+    favorite_events = FavoriteEvent.objects.filter(user=user)
+
+    return render(request, 'auths/profile/userprofile.html',
+                  context={'user': user, 'event_list': event_list, 'event_list_count': event_list_count,
+                           'favorite_events': favorite_events,
+                           'page': 'user-profile'})
+
+
+def user_profile_update(request):
+    sex = request.user.userprofile.sex
+    bio = request.user.userprofile.bio
+    profile_photo = request.user.userprofile.profile_photo
+    birth_day = request.user.userprofile.birth_day
+
+    print(request.user.email)
+
+    initial = {'sex': sex, 'bio': bio, 'profile_photo': profile_photo, 'birth_day': birth_day}
+    form = UserProfileUpdateForm(initial=initial, instance=request.user, data=request.POST or None,
+                                 files=request.FILES or None)
+    if request.method == "POST":
+        if form.is_valid():
+            user = form.save(commit=True)
+            bio = form.cleaned_data.get('bio', None)
+            sex = form.cleaned_data.get('sex', None)
+            profile_photo = form.cleaned_data.get('profile_photo', None)
+            birth_day = form.cleaned_data.get('birth_day', None)
+
+            user.userprofile.sex = sex
+            user.userprofile.profile_photo = profile_photo
+            user.userprofile.bio = bio
+            user.userprofile.birth_day = birth_day
+            user.userprofile.save()
+            messages.success(request, 'Tebrikler Kullanıcı Bilgileriniz Başarıyla Güncellendi', extra_tags='success')
+            return HttpResponseRedirect(reverse('user-profile', kwargs={'username': user.username}))
+        else:
+            messages.warning(request, 'Lütfen form alanlarını doğru giriniz.', extra_tags='danger')
+
+    return render(request, 'auths/profile/settings.html', context={'form': form})

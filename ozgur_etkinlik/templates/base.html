@@ -55,7 +55,7 @@
                        aria-expanded="false">{{ request.user.userprofile.get_screen_name }}<span
                             class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a href="#"> <span
+                        <li><a href="{% url 'user-profile' user.username %}"> <span
                                 class="glyphicon glyphicon-user"></span> Profile</a></li>
                         <li><a href="#"> <span class="glyphicon glyphicon-cog"></span> Settings
                         </a></li>

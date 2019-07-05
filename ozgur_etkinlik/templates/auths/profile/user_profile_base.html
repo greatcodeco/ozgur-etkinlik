@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block ust_icerik %}
+
+
+{% endblock %}
+
+{% block title %} {{ user.profile.get_screen_name }}{% endblock %}
+
+{% block icerik %}
+<div class="row ">
+    <div class="col-lg-10 pull-center" style="margin-top: 50px;">
+
+        <div class="col-lg-8">
+            {% if user.userprofile.user_full_name %}
+            <span class="text"><b>{{ user.userprofile.user_full_name|upper }}</b></span>
+            <br/>
+            {% else %}
+            <span class="text"> <b>{{user.username}}</b> </span>
+            {% endif %}
+            <br>
+            {% if user.userprofile.bio == not 'None' %}
+            <span class="text">{{user.userprofile.bio}}</span>
+            {% else %}
+            <a href="#">Bio eklemek için tıklayın</a>
+            {% endif %}
+        </div>
+        <div class="col-lg-2 pull-right ">
+            <img style="height:150px" ; width="150px" ; class="pull-left"
+                 src="{{ user.userprofile.get_profile_photo }}">
+            <br>
+            <a class="btn btn-default" href="{% url 'user-profile-update' %}">Profilini Güncelle</a>
+        </div>
+
+        <div class="col-lg-8 ">
+            <h2 class="page-header"> Etkinlikler <span> ( {{ event_list_count}} ) : </span></h2>
+            {% for event in event_list %}
+
+            <div class="col-lg-3 pull-left">
+                <h3><a href="{% url 'event-detail' event.slug %}"> {{ event.title }}</a></h3>
+
+                {% if event.get_image %}
+                <img width="275" height="208" class="img-responsive" src="{{ event.get_image }}" alt="">
+
+                {% endif %}
+
+                <p> {{event.starter_date}}</p>
+
+                <span title="Favori Sayısı">
+                <b class="event-favorite-count">{{ event.get_favorite_count }}</b></span>
+
+            </div>
+            {% endfor %}
+
+
+        </div>
+
+        <div class="col-lg-8">
+            <h2 class="page-header"> Favori Etkinlikler <span> ( {{ event_list_count}} ) : </span></h2>
+
+            {% for event in favorite_events %}
+
+            <div class="col-lg-3 pull-left">
+                <h3><a href="{% url 'event-detail' event.event.slug %}"> {{ event.event.title }}</a></h3>
+
+                {% if event.get_image %}
+                <img width="275" height="208" class="img-responsive" src="{{ event.event.get_image }}" alt="">
+
+                {% endif %}
+
+                <p> {{event.event.starter_date}}</p>
+
+                <span title="Favori Sayısı">
+                <b class="event-favorite-count">{{ event.event.get_favorite_count }}</b></span>
+
+            </div>
+            {% endfor %}
+        </div>
+
+
+    </div>
+</div>
+{% endblock %}

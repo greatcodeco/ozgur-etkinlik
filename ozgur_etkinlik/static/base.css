@@ -1,5 +1,6 @@
+
 body {
-    background:white url("img/background.png");
+    background: white url("img/background.png");
 }
 
 .pull-center {
@@ -7,9 +8,9 @@ body {
     margin: 0 auto;
 }
 
-.user-profile {
+.user-profile-img {
     width: 150px;
-
+    height: 150px;
 }
 
 .user-profile {
