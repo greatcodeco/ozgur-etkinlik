@@ -5,11 +5,11 @@ from django.template.defaultfilters import slugify, safe
 from unidecode import unidecode
 from uuid import uuid4
 from django.shortcuts import reverse
-from location_field.models.plain import PlainLocationField
 import os
 
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
+
 
 
 def upload_to(instance, filename):
@@ -32,8 +32,7 @@ class Event(models.Model):
     starter_date = models.DateField(null=True, blank=True, verbose_name='Başlangıç günü')
 
     size = models.IntegerField(verbose_name='Katılımcı sayısı', null=True, default=0)
-    city = models.CharField(max_length=255, null=True)
-    location = PlainLocationField(based_fields=['City'], zoom=7, null=True)
+    #city = CountryField(null=True)
     slug = models.SlugField(null=True, unique=True, editable=False, verbose_name='Slug')
     category = models.CharField(choices=CATEGORY, blank=True, null=True, max_length=53, verbose_name='Kategori')
     image = models.ImageField(default='default/marijuana.jpg', verbose_name='Resim', upload_to=upload_to,

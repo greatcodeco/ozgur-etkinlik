@@ -9,7 +9,7 @@ class EventForm(forms.ModelForm):
 
     class Meta:
         model = Event
-        fields = ["user", "title", "content", "image", 'category', "starter_date", 'starter_time', 'city', 'location']
+        fields = ["user", "title", "content", "image", 'category', "starter_date", 'starter_time']
 
     def __init__(self, *args, **kwargs):
         super(EventForm, self).__init__(*args, **kwargs)  # kalıtım aldığı init fonksiyonları
