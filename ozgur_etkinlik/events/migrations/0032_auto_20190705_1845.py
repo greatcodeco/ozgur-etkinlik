@@ -5,7 +5,6 @@ import location_field.models.plain
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('events', '0031_remove_event_city'),
     ]
