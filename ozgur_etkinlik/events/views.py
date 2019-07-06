@@ -25,7 +25,6 @@ def index(request):
 def event_list(request):
     form = SearchForm(data=request.GET or None)
     events = Event.objects.all()
-    page = request.GET.get('page', 1)
 
     if form.is_valid():
         search = form.cleaned_data.get('search', None)
@@ -39,17 +38,8 @@ def event_list(request):
         # if time:
         #   events = events.filter(starter_date=time)
 
-    paginator = Paginator(events, 1)
-    try:
-        events = paginator.page(page)
-    except EmptyPage:
-        events = paginator.page(paginator.num_pages)
-    except PageNotAnInteger:
-        events = paginator.page(1)
-
     context = {'events': events, 'form': form}
     return render(request, 'event/event_list.html', context)
-
 
 @login_required(login_url=reverse_lazy('user-login'))
 def add_or_remove_favorite(request, slug):

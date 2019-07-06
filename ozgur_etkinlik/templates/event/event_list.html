@@ -1,136 +1,106 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Event List
+    Event List
 {% endblock %}
 
 {% block ust_icerik %}
 
-<script type="text/javascript">
-    $(document).ready(function () {
-        $(".event").on('click', '.add-favorite-button', function (e) {
-            e.preventDefault();
-            console.log("selam");
-            var $this = $(this);
-            var $url = $this.attr('href');
-            $.ajax({
-                url: $url,
-                method: "GET",
-                data: {},
-                success: function (data) {
-                    var response = data.status;
-                    var count = data.count;
-                    var $span = $this.find('span');
-                    if (response === 'added') {
-                        $span.addClass('active');
-                    } else {
-                        $span.removeClass('active');
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".event").on('click', '.add-favorite-button', function (e) {
+                e.preventDefault();
+                console.log("selam");
+                var $this = $(this);
+                var $url = $this.attr('href');
+                $.ajax({
+                    url: $url,
+                    method: "GET",
+                    data: {},
+                    success: function (data) {
+                        var response = data.status;
+                        var count = data.count;
+                        var $span = $this.find('span');
+                        if (response === 'added') {
+                            $span.addClass('active');
+                        } else {
+                            $span.removeClass('active');
+                        }
+                        $this.closest('div').find('.event-favorite-count').html(count)
                     }
-                    $this.closest('div').find('.event-favorite-count').html(count)
-                }
 
-            })
-        });
+                })
+            });
 
 
-    })
+        })
 
-</script>
+    </script>
 
 {% endblock %}
 
 
 {% block icerik %}
 
-<div class="row">
-    <div class="col-lg-12">
-
-        <div class="row">
-            <div class="col-lg-12">
-                <form class="form-inline" action="{% url 'event-list' %}">
-
-                    {% for foo in form %}
-                    <div class="form-group">
-                        {{ foo }}
-                        {% for error in foo.errors %}
-                        <span class="text-danger"><b>{{ error }}</b></span>
-                        {% endfor %}
-                    </div>
-
-                    {% endfor %}
-
-                    <input type="submit" class="btn btn-success" value="Ara">
-
-                </form>
-
-            </div>
-
-        </div>
-
-        <div class="event">
-
-            {% for event in events %}
-
-            <div class="col-lg-3 pull-left">
-                <h3><a href="{% url 'event-detail' event.slug %}"> {{ event.title }}</a></h3>
-
-                {% if event.get_image %}
-                <img width="275" height="208" class="img-responsive" src="{{ event.get_image }}" alt="">
-
-                {% endif %}
-
-                <p> Başlangıç tarihi: {{event.starter_date}}</p>
-
-                <a href="{% url 'add-remove-favorite' event.slug %}"
-                   class="add-favorite-button btn btnsm btn-default">
-                    <span class="glyphicon glyphicon-star {% if request.user.username in event.get_added_favorite_user %}active{% endif %}"></span>
-                </a>
-
-                <span title="Favori Sayısı">
-                <b class="event-favorite-count">{{ event.get_favorite_count }}</b></span>
-
-                <p>Etkinliği oluşturan: <a href="#"> {{event.user}}</a></p>
-
-
-            </div>
-        </div>
-    </div>
-    {% empty %}
-
-    <p class="alert alert-info">Aradağınız Kiriteder Bir Blog Bulunamadı</p>
-
-    {% endfor %}
-
     <div class="row">
         <div class="col-lg-12">
-            <div class="col-lg-8 col-lg-offset-2">
-                {% if events.has_other_pages %}
-                <ul class="pagination">
-                    {% if events.has_previous %}
-                    <li><a href="?page={{ events.previous_page_number }}">&laquo;</a></li>
-                    {% else %}
-                    <li class="disabled"><span>&laquo;</span></li>
-                    {% endif %}
-                    {% for i in events.paginator.page_range %}
-                    {% if events.number == i %}
-                    <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
-                    {% else %}
-                    <li><a href="?page={{ i }}">{{ i }}</a></li>
-                    {% endif %}
-                    {% endfor %}
-                    {% if events.has_next %}
-                    <li><a href="?page={{ events.next_page_number }}">&raquo;</a></li>
-                    {% else %}
-                    <li class="disabled"><span>&raquo;</span></li>
-                    {% endif %}
-                </ul>
-                {% endif %}
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <form class="form-inline" action="{% url 'event-list' %}">
+
+                        {% for foo in form %}
+                            <div class="form-group">
+                                {{ foo }}
+                                {% for error in foo.errors %}
+                                    <span class="text-danger"><b>{{ error }}</b></span>
+                                {% endfor %}
+                            </div>
+
+                        {% endfor %}
+
+                        <input type="submit" class="btn btn-success" value="Ara">
+
+                    </form>
+
+                </div>
+
+            </div>
+
+            <div class="event">
+
+                {% for event in events %}
+
+                    <div class="col-lg-3 pull-left">
+                        <h3><a href="{% url 'event-detail' event.slug %}"> {{ event.title }}</a></h3>
+
+                        {% if event.get_image %}
+                            <img width="275" height="208" class="img-responsive" src="{{ event.get_image }}" alt="">
+
+                        {% endif %}
+
+                        <p> Başlangıç tarihi: {{ event.starter_date }}</p>
+
+                        <a href="{% url 'add-remove-favorite' event.slug %}"
+                           class="add-favorite-button btn btnsm btn-default">
+                            <span class="glyphicon glyphicon-star {% if request.user.username in event.get_added_favorite_user %}active{% endif %}"></span>
+                        </a>
+
+                        <span title="Favori Sayısı">
+                            <b class="event-favorite-count">{{ event.get_favorite_count }}</b></span>
+
+                        <p>Etkinliği oluşturan: <a href="/auths/{{ event.user }}"> {{ event.user }}</a></p>
+
+
+                    </div>
+                    {% empty %}
+
+                    <p class="alert alert-info">Aradağınız Kiriteder Bir Blog Bulunamadı</p>
+
+                {% endfor %}
             </div>
         </div>
     </div>
-
-</div>
-</div>
 
 
 {% endblock %}
