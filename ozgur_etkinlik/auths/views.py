@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .forms import RegisterForm, LoginForm, UserProfileUpdateForm
 from django.contrib.auth.models import User
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from events.models import Event, FavoriteEvent
 
@@ -46,10 +47,16 @@ def user_logout(request):
 
 
 def user_profile(request, username):
+    page = request.GET.get('page1', 1)
+
     user = get_object_or_404(User, username=username)
     event_list = Event.objects.filter(user=user)
     event_list_count = event_list.count()
     favorite_events = FavoriteEvent.objects.filter(user=user)
+
+    event_list = events_and_favorite_events_paginate(event_list, page)
+    page = request.GET.get('page2', 1)
+    favorite_events = events_and_favorite_events_paginate(favorite_events, page)
 
     return render(request, 'auths/profile/userprofile.html',
                   context={'user': user, 'event_list': event_list, 'event_list_count': event_list_count,
@@ -62,8 +69,6 @@ def user_profile_update(request):
     bio = request.user.userprofile.bio
     profile_photo = request.user.userprofile.profile_photo
     birth_day = request.user.userprofile.birth_day
-
-    print(request.user.email)
 
     initial = {'sex': sex, 'bio': bio, 'profile_photo': profile_photo, 'birth_day': birth_day}
     form = UserProfileUpdateForm(initial=initial, instance=request.user, data=request.POST or None,
@@ -87,3 +92,15 @@ def user_profile_update(request):
             messages.warning(request, 'Lütfen form alanlarını doğru giriniz.', extra_tags='danger')
 
     return render(request, 'auths/profile/settings.html', context={'form': form})
+
+
+def events_and_favorite_events_paginate(queryset, page):
+    paginator = Paginator(queryset, 1)
+    try:
+        queryset = paginator.page(page)
+    except EmptyPage:
+        queryset = paginator.page(paginator.num_pages)
+    except PageNotAnInteger:
+        queryset = paginator.page(1)
+
+    return queryset

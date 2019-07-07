@@ -53,8 +53,35 @@
             </div>
             {% endfor %}
 
-
         </div>
+        <div class="row">
+                    <div class="col-lg-12">
+                        <div class="col-lg-8 col-lg-offset-2">
+                            {% if event_list.has_other_pages %}
+                                <ul class="pagination">
+                                    {% if event_list.has_previous %}
+                                        <li><a href="?page1={{ event_list.previous_page_number }}">&laquo;</a></li>
+                                    {% else %}
+                                        <li class="disabled"><span>&laquo;</span></li>
+                                    {% endif %}
+                                    {% for i in event_list.paginator.page_range %}
+                                        {% if event_list.number == i %}
+                                            <li class="active"><span>{{ i }} <span
+                                                    class="sr-only">(current)</span></span></li>
+                                        {% else %}
+                                            <li><a href="?page1={{ i }}">{{ i }}</a></li>
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% if event_list.has_next %}
+                                        <li><a href="?page1={{ event_list.next_page_number }}">&raquo;</a></li>
+                                    {% else %}
+                                        <li class="disabled"><span>&raquo;</span></li>
+                                    {% endif %}
+                                </ul>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
 
         <div class="col-lg-8">
             <h2 class="page-header"> Favori Etkinlikler <span> ( {{ event_list_count }} ) : </span></h2>
@@ -77,6 +104,35 @@
             </div>
             {% endfor %}
         </div>
+        <div class="row">
+                       <div class="col-lg-12">
+                           <div class="col-lg-8 col-lg-offset-2">
+                               {% if favorite_events.has_other_pages %}
+                                   <ul class="pagination">
+                                       {% if favorite_events.has_previous %}
+                                           <li><a href="?page2={{ favorite_events.previous_page_number }}">&laquo;</a>
+                                           </li>
+                                       {% else %}
+                                           <li class="disabled"><span>&laquo;</span></li>
+                                       {% endif %}
+                                       {% for i in favorite_events.paginator.page_range %}
+                                           {% if favorite_events.number == i %}
+                                               <li class="active"><span>{{ i }} <span
+                                                       class="sr-only">(current)</span></span></li>
+                                           {% else %}
+                                               <li><a href="?page2={{ i }}">{{ i }}</a></li>
+                                           {% endif %}
+                                       {% endfor %}
+                                       {% if favorite_events.has_next %}
+                                           <li><a href="?page2={{ favorite_events.next_page_number }}">&raquo;</a></li>
+                                       {% else %}
+                                           <li class="disabled"><span>&raquo;</span></li>
+                                       {% endif %}
+                                   </ul>
+                               {% endif %}
+                           </div>
+                       </div>
+                   </div>
 
 
     </div>
