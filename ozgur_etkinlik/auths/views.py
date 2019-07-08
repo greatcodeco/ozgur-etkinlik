@@ -1,4 +1,5 @@
 from django.shortcuts import render, HttpResponseRedirect, get_object_or_404, reverse
+from django.http import HttpResponseBadRequest, JsonResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .forms import RegisterForm, LoginForm, UserProfileUpdateForm
@@ -47,9 +48,9 @@ def user_logout(request):
 
 
 def user_profile(request, username):
-    page = request.GET.get('page1', 1)
-
     user = get_object_or_404(User, username=username)
+
+    page = request.GET.get('page1', 1)
     event_list = Event.objects.filter(user=user)
     event_list_count = event_list.count()
     favorite_events = FavoriteEvent.objects.filter(user=user)
@@ -57,6 +58,9 @@ def user_profile(request, username):
     event_list = events_and_favorite_events_paginate(event_list, page)
     page = request.GET.get('page2', 1)
     favorite_events = events_and_favorite_events_paginate(favorite_events, page)
+
+
+
 
     return render(request, 'auths/profile/userprofile.html',
                   context={'user': user, 'event_list': event_list, 'event_list_count': event_list_count,
@@ -92,6 +96,12 @@ def user_profile_update(request):
             messages.warning(request, 'Lütfen form alanlarını doğru giriniz.', extra_tags='danger')
 
     return render(request, 'auths/profile/settings.html', context={'form': form})
+
+
+def profile_list_events(request):
+    data = {'sa':'sa'}
+
+    return render(request, 'auths/profile/include/sa.html')
 
 
 def events_and_favorite_events_paginate(queryset, page):

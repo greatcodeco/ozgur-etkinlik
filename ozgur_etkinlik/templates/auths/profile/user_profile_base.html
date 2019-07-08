@@ -2,139 +2,121 @@
 {% load static %}
 
 {% block ust_icerik %}
+    <script type="text/javascript" rel="script">
+        $(document).ready(function () {
+            var url = "{% url 'profile-list-events' %}";
+            console.log(url);
+            $(".event_list").load(url);
 
 
+            console.log("selam");
+            var url = "{% url 'profile-list-events' %}";
+            $.ajax({
+                url: url,
+                method: "POST",
+                dataType: 'json',
+                data: {'csrfmiddlewaretoken': '{{ csrf_token }}'},
+                success: function (data) {
+                    console.log(data);
+                }
+            })
+
+
+        });
+    </script>
 {% endblock %}
 
 {% block title %} {{ user.profile.get_screen_name }}{% endblock %}
 
 {% block icerik %}
-<div class="row ">
-    <div class="col-lg-10 pull-center" style="margin-top: 50px;">
 
-        <div class="col-lg-8">
-            {% if user.userprofile.user_full_name %}
-            <span class="text"><b>{{ user.userprofile.user_full_name|upper }}</b></span>
-            <br/>
-            {% else %}
-            <span class="text"> <b>{{user.username}}</b> </span>
-            {% endif %}
-            <br>
-            {% if user.userprofile.bio == not 'None' %}
-            <span class="text">{{user.userprofile.bio}}</span>
-            {% else %}
-            <a href="#">Bio eklemek için tıklayın</a>
-            {% endif %}
-        </div>
-        <div class="col-lg-2 pull-right ">
-            <img style="height:150px" ; width="150px" ; class="pull-left"
-                 src="{{ user.userprofile.get_profile_photo }}">
-            <br>
-            <a class="btn btn-default" href="{% url 'user-profile-update' %}">Profilini Güncelle</a>
-        </div>
 
-        <div class="col-lg-8 ">
-            <h2 class="page-header"> Etkinlikler <span> ( {{ event_list_count }} ) : </span></h2>
-            {% for event in event_list %}
+    <div class="row ">
+        <div class="col-lg-10 pull-center" style="margin-top: 50px;">
 
-            <div class="col-lg-3 pull-left">
-                <h3><a href="{% url 'event-detail' event.slug %}"> {{ event.title }}</a></h3>
 
-                {% if event.get_image %}
-                <img width="275" height="208" class="img-responsive" src="{{ event.get_image }}" alt="">
-
+            <div class="col-lg-8">
+                {% if user.userprofile.user_full_name %}
+                    <span class="text"><b>{{ user.userprofile.user_full_name|upper }}</b></span>
+                    <br/>
+                {% else %}
+                    <span class="text"> <b>{{ user.username }}</b> </span>
                 {% endif %}
-
-                <p> {{event.starter_date}}</p>
-
-                <span title="Favori Sayısı">
-                <b class="event-favorite-count">{{ event.get_favorite_count }}</b></span>
-
+                <br>
+                {% if user.userprofile.bio == not 'None' %}
+                    <span class="text">{{ user.userprofile.bio }}</span>
+                {% else %}
+                    <a href="#">Bio eklemek için tıklayın</a>
+                {% endif %}
             </div>
-            {% endfor %}
+            <div class="col-lg-2 pull-right ">
+                <img style="height:150px" ; width="150px" ; class="pull-left"
+                     src="{{ user.userprofile.get_profile_photo }}">
+                <br>
+                <a class="btn btn-default" href="{% url 'user-profile-update' %}">Profilini Güncelle</a>
+            </div>
 
-        </div>
-        <div class="row">
-                    <div class="col-lg-12">
-                        <div class="col-lg-8 col-lg-offset-2">
-                            {% if event_list.has_other_pages %}
-                                <ul class="pagination">
-                                    {% if event_list.has_previous %}
-                                        <li><a href="?page1={{ event_list.previous_page_number }}">&laquo;</a></li>
-                                    {% else %}
-                                        <li class="disabled"><span>&laquo;</span></li>
-                                    {% endif %}
-                                    {% for i in event_list.paginator.page_range %}
-                                        {% if event_list.number == i %}
-                                            <li class="active"><span>{{ i }} <span
-                                                    class="sr-only">(current)</span></span></li>
-                                        {% else %}
-                                            <li><a href="?page1={{ i }}">{{ i }}</a></li>
-                                        {% endif %}
-                                    {% endfor %}
-                                    {% if event_list.has_next %}
-                                        <li><a href="?page1={{ event_list.next_page_number }}">&raquo;</a></li>
-                                    {% else %}
-                                        <li class="disabled"><span>&raquo;</span></li>
-                                    {% endif %}
-                                </ul>
-                            {% endif %}
-                        </div>
-                    </div>
+            <div class="col-lg-8 ">
+                <h2 class="page-header"> Etkinlikler <span> ( {{ event_list_count }} ) : </span></h2>
+
+                <div class="event_list" data-url="include/sa.html">
+
                 </div>
 
-        <div class="col-lg-8">
-            <h2 class="page-header"> Favori Etkinlikler <span> ( {{ event_list_count }} ) : </span></h2>
+            </div>
+            <div class="col-lg-8">
+                <h2 class="page-header"> Favori Etkinlikler <span> ( {{ event_list_count }} ) : </span></h2>
 
-            {% for event in favorite_events %}
+                {% for event in favorite_events %}
 
-            <div class="col-lg-3 pull-left">
-                <h3><a href="{% url 'event-detail' event.event.slug %}"> {{ event.event.title }}</a></h3>
+                    <div class="col-lg-3 pull-left">
+                        <h3><a href="{% url 'event-detail' event.event.slug %}"> {{ event.event.title }}</a></h3>
 
-                {% if event.get_image %}
-                <img width="275" height="208" class="img-responsive" src="{{ event.event.get_image }}" alt="">
+                        {% if event.get_image %}
+                            <img width="275" height="208" class="img-responsive" src="{{ event.event.get_image }}"
+                                 alt="">
 
-                {% endif %}
+                        {% endif %}
 
-                <p> {{event.event.starter_date}}</p>
+                        <p> {{ event.event.starter_date }}</p>
 
-                <span title="Favori Sayısı">
+                        <span title="Favori Sayısı">
                 <b class="event-favorite-count">{{ event.event.get_favorite_count }}</b></span>
 
+                    </div>
+                {% endfor %}
             </div>
-            {% endfor %}
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="col-lg-8 col-lg-offset-2">
+                        {% if favorite_events.has_other_pages %}
+                            <ul class="pagination">
+                                {% if favorite_events.has_previous %}
+                                    <li><a href="?page2={{ favorite_events.previous_page_number }}">&laquo;</a>
+                                    </li>
+                                {% else %}
+                                    <li class="disabled"><span>&laquo;</span></li>
+                                {% endif %}
+                                {% for i in favorite_events.paginator.page_range %}
+                                    {% if favorite_events.number == i %}
+                                        <li class="active"><span>{{ i }} <span
+                                                class="sr-only">(current)</span></span></li>
+                                    {% else %}
+                                        <li><a href="?page2={{ i }}">{{ i }}</a></li>
+                                    {% endif %}
+                                {% endfor %}
+                                {% if favorite_events.has_next %}
+                                    <li><a href="?page2={{ favorite_events.next_page_number }}">&raquo;</a></li>
+                                {% else %}
+                                    <li class="disabled"><span>&raquo;</span></li>
+                                {% endif %}
+                            </ul>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+
         </div>
-        <div class="row">
-                       <div class="col-lg-12">
-                           <div class="col-lg-8 col-lg-offset-2">
-                               {% if favorite_events.has_other_pages %}
-                                   <ul class="pagination">
-                                       {% if favorite_events.has_previous %}
-                                           <li><a href="?page2={{ favorite_events.previous_page_number }}">&laquo;</a>
-                                           </li>
-                                       {% else %}
-                                           <li class="disabled"><span>&laquo;</span></li>
-                                       {% endif %}
-                                       {% for i in favorite_events.paginator.page_range %}
-                                           {% if favorite_events.number == i %}
-                                               <li class="active"><span>{{ i }} <span
-                                                       class="sr-only">(current)</span></span></li>
-                                           {% else %}
-                                               <li><a href="?page2={{ i }}">{{ i }}</a></li>
-                                           {% endif %}
-                                       {% endfor %}
-                                       {% if favorite_events.has_next %}
-                                           <li><a href="?page2={{ favorite_events.next_page_number }}">&raquo;</a></li>
-                                       {% else %}
-                                           <li class="disabled"><span>&raquo;</span></li>
-                                       {% endif %}
-                                   </ul>
-                               {% endif %}
-                           </div>
-                       </div>
-                   </div>
-
-
     </div>
-</div>
 {% endblock %}
