@@ -129,8 +129,7 @@ Post List
                         </a>
 
                         <span title="Favori Sayısı">
-                <b class="event-favorite-count">{{ event.get_favorite_count }}</b></span> <a href="#"
-                                                                                             class="btn btn-default btn-block">Paylaş</a>
+                        <b class="event-favorite-count">{{ event.get_favorite_count }}</b></span>
                         <a href="https://www.facebook.com/sharer/sharer.php?u=http://CodingForEntrepreneurs.com/">
                             Share on Facebook
                         </a>
@@ -145,7 +144,11 @@ Post List
                         <br>
 
                         <hr>
-                        <div style="height: 250px; width:250px; background-color:rosybrown"> HARİTA</div>
+                                    <h2>
+                <strong>
+                    <a href="{{ url }}">Adresi Görüntüle</a>
+                </strong>
+            </h2>
 
                     </div>
                 </div>
@@ -155,7 +158,7 @@ Post List
                         <span>{{event.content | safe}} </span>
 
                         <p class="lead">
-                            Kategoriler: {{ event.kategoriler.all|join:',' }}
+                            Kategoriler: {{ event.kategoriler.all }}
                         </p>
                     </div>
                 </div>
@@ -170,11 +173,7 @@ Post List
             {% endif %}
 
         <br>
-            <h2>
-                <strong>
-                    <a href="{{ url }}">Adresi Görüntüle</a>
-                </strong>
-            </h2>
+
         </div>
 
 

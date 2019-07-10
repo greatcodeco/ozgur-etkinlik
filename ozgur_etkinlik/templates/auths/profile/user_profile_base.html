@@ -43,7 +43,7 @@
                     <span class="text"> <b>{{ user.username }}</b> </span>
                 {% endif %}
                 <br>
-                {% if user.userprofile.bio == not 'None' %}
+                {% if user.userprofile.bio %}
                     <span class="text">{{ user.userprofile.bio }}</span>
                 {% else %}
                     <a href="#">Bio eklemek için tıklayın</a>
