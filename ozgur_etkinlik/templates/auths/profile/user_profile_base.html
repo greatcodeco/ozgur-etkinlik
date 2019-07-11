@@ -4,23 +4,47 @@
 {% block ust_icerik %}
     <script type="text/javascript" rel="script">
         $(document).ready(function () {
-            var url = "{% url 'profile-list-events' %}";
-            console.log(url);
-            $(".event_list").load(url);
 
 
-            console.log("selam");
-            var url = "{% url 'profile-list-events' %}";
+            var url = "{% url 'user-profile' user.username %} ";
             $.ajax({
                 url: url,
                 method: "POST",
                 dataType: 'json',
                 data: {'csrfmiddlewaretoken': '{{ csrf_token }}'},
                 success: function (data) {
-                    console.log(data);
+                    $(".profile_events_list").html(data.html);
                 }
-            })
+            });
 
+            $(".profile_events_list").on('click', '#event_list_next_page', function (e) {
+                e.preventDefault();
+                var url = $('#event_list_next_page').attr('href');
+
+                $.ajax({
+                    url: url,
+                    method: "POST",
+                    data:{'csrfmiddlewaretoken': '{{ csrf_token }}'},
+                    success: function (data) {
+                        $(".profile_events_list").html(data.html);
+
+                    }
+                })
+            });
+            $(".profile_events_list").on('click', '#event_list_previous_page', function (e) {
+                e.preventDefault();
+                var url = $('#event_list_previous_page').attr('href');
+
+                $.ajax({
+                    url: url,
+                    method: "POST",
+                    data:{'csrfmiddlewaretoken': '{{ csrf_token }}'},
+                    success: function (data) {
+                        $(".profile_events_list").html(data.html);
+
+                    }
+                })
+            })
 
         });
     </script>
@@ -59,7 +83,9 @@
             <div class="col-lg-8 ">
                 <h2 class="page-header"> Etkinlikler <span> ( {{ event_list_count }} ) : </span></h2>
 
-                <div class="event_list" data-url="include/sa.html">
+
+                <div class="profile_events_list">
+
 
                 </div>
 

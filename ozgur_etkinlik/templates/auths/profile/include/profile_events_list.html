@@ -1,6 +1,7 @@
-<div id="profile_events_list">
-    {% for event in event_list %}
 
+
+<div class="row">
+    {% for event in event_list %}
         <div class="col-lg-3 pull-left">
             <h3><a href="{% url 'event-detail' event.slug %}"> {{ event.title }}</a></h3>
 
@@ -13,7 +14,6 @@
 
             <span title="Favori Sayısı">
                 <b class="event-favorite-count">{{ event.get_favorite_count }}</b></span>
-
         </div>
     {% endfor %}
 
@@ -23,20 +23,13 @@
                 {% if event_list.has_other_pages %}
                     <ul class="pagination">
                         {% if event_list.has_previous %}
-                            <li><a href="?page1={{ event_list.previous_page_number }}">&laquo;</a></li>
+                            <li><a id="event_list_previous_page" href="?page1={{ event_list.previous_page_number }}">&laquo;</a></li>
                         {% else %}
                             <li class="disabled"><span>&laquo;</span></li>
                         {% endif %}
-                        {% for i in event_list.paginator.page_range %}
-                            {% if event_list.number == i %}
-                                <li class="active"><span>{{ i }} <span
-                                        class="sr-only">(current)</span></span></li>
-                            {% else %}
-                                <li><a href="?page1={{ i }}">{{ i }}</a></li>
-                            {% endif %}
-                        {% endfor %}
                         {% if event_list.has_next %}
-                            <li><a href="?page1={{ event_list.next_page_number }}">&raquo;</a></li>
+                            <li><a id="event_list_next_page"
+                                   href="?page1={{ event_list.next_page_number }}">&raquo;</a></li>
                         {% else %}
                             <li class="disabled"><span>&raquo;</span></li>
                         {% endif %}

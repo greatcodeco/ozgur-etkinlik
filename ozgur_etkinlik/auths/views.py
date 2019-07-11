@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from events.models import Event, FavoriteEvent
+from django.template.loader import render_to_string
 
 
 # Create your views here.
@@ -50,22 +51,25 @@ def user_logout(request):
 def user_profile(request, username):
     user = get_object_or_404(User, username=username)
 
+    data = {'html': ''}
+
     page = request.GET.get('page1', 1)
     event_list = Event.objects.filter(user=user)
     event_list_count = event_list.count()
     favorite_events = FavoriteEvent.objects.filter(user=user)
 
     event_list = events_and_favorite_events_paginate(event_list, page)
-    page = request.GET.get('page2', 1)
-    favorite_events = events_and_favorite_events_paginate(favorite_events, page)
+    page2 = request.GET.get('page2', 1)
+    favorite_events = events_and_favorite_events_paginate(favorite_events, page2)
+    context = {'user': user, 'event_list': event_list, 'event_list_count': event_list_count,
+               'favorite_events': favorite_events,
+               'page': 'user-profile'}
+    if request.is_ajax():
+        html = render_to_string('auths/profile/include/profile_events_list.html', context=context)
+        data.update({'html': html})
+        return JsonResponse(data=data)
 
-
-
-
-    return render(request, 'auths/profile/userprofile.html',
-                  context={'user': user, 'event_list': event_list, 'event_list_count': event_list_count,
-                           'favorite_events': favorite_events,
-                           'page': 'user-profile'})
+    return render(request, 'auths/profile/userprofile.html', context=context)
 
 
 def user_profile_update(request):
@@ -99,9 +103,11 @@ def user_profile_update(request):
 
 
 def profile_list_events(request):
-    data = {'sa':'sa'}
+    data = {'sa': 'sa'}
+    selam = "selamet"
+    context = {'selam': selam}
 
-    return render(request, 'auths/profile/include/sa.html')
+    return render(request, 'auths/profile/include/sa.html', context=context)
 
 
 def events_and_favorite_events_paginate(queryset, page):
