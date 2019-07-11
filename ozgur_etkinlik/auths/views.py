@@ -64,9 +64,12 @@ def user_profile(request, username):
     context = {'user': user, 'event_list': event_list, 'event_list_count': event_list_count,
                'favorite_events': favorite_events,
                'page': 'user-profile'}
+
     if request.is_ajax():
-        html = render_to_string('auths/profile/include/profile_events_list.html', context=context)
-        data.update({'html': html})
+
+        html_events = render_to_string('auths/profile/include/profile_events_list.html', context=context)
+        html_favorite = render_to_string('auths/profile/include/profile_favorite_events_list.html', context=context)
+        data.update({'html': html_events, 'html_favorite': html_favorite})
         return JsonResponse(data=data)
 
     return render(request, 'auths/profile/userprofile.html', context=context)

@@ -1,0 +1,41 @@
+{% for event in favorite_events %}
+
+    <div class="col-lg-3 pull-left">
+        <h3><a href="{% url 'event-detail' event.event.slug %}"> {{ event.event.title }}</a></h3>
+
+        {% if event.get_image %}
+            <img width="275" height="208" class="img-responsive" src="{{ event.event.get_image }}"
+                 alt="">
+
+        {% endif %}
+
+        <p> {{ event.event.starter_date }}</p>
+
+        <span title="Favori Sayısı">
+                <b class="event-favorite-count">{{ event.event.get_favorite_count }}</b></span>
+
+    </div>
+{% endfor %}
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="col-lg-8 col-lg-offset-2">
+            {% if favorite_events.has_other_pages %}
+                <ul class="pagination">
+                    {% if favorite_events.has_previous %}
+                        <li><a id="event_favorite_list_previous_page" href="?page2={{ favorite_events.previous_page_number }}">&laquo;</a>
+                        </li>
+                    {% else %}
+                        <li class="disabled"><span>&laquo;</span></li>
+                    {% endif %}
+
+                    {% if favorite_events.has_next %}
+                        <li><a id="event_favorite_list_next_page" href="?page2={{ favorite_events.next_page_number }}">&raquo;</a></li>
+                    {% else %}
+                        <li class="disabled"><span>&raquo;</span></li>
+                    {% endif %}
+                </ul>
+            {% endif %}
+        </div>
+    </div>
+</div>
