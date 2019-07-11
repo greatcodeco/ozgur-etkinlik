@@ -11,6 +11,7 @@ urlpatterns = [
     path('event-delete/<slug:slug>', views.event_delete, name="event-delete"),
     path('event-detail/<slug:slug>', views.event_detail, name="event-detail"),
     path('registerEvent/<int:id>', views.registerEvent, name="registerEvent"),
+    path('explore', views.explore, name='explore'),
 
     path('add-remove-favorite/<slug:slug>', views.add_or_remove_favorite, name="add-remove-favorite"),
 

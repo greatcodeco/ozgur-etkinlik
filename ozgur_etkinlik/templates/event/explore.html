@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Event Keşfet
+{% endblock %}
+
+
+{% block icerik %}
+
+    <h1>
+        Burada gördüğün etkinliklerden birisini neden kendi şehrinde düzenlemiyorsun?
+    </h1>
+    <h3>
+        İstediğin etkinliği seç ve hemen oluştur!
+    </h3>
+
+    <div style="margin-left: 20%; margin-top: 10%">
+        <h1>
+            {% for foo in events %}
+                <a href="{% url 'event-create' %}">{{ foo }}</a>
+                <br><br>
+            {% endfor %}
+        </h1>
+    </div>
+{% endblock %}
+
+

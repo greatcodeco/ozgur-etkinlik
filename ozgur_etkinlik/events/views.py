@@ -41,6 +41,16 @@ def event_list(request):
     context = {'events': events, 'form': form}
     return render(request, 'event/event_list.html', context)
 
+
+def explore(request):
+    events = {'kitap': 'Kitap Okuma',
+              'yürüyüs': 'Yürüyüş',
+              'programlama': 'Programlama',
+              'sohbet': 'Sohbet'}
+
+    return render(request, 'event/explore.html', {'events': events})
+
+
 @login_required(login_url=reverse_lazy('user-login'))
 def add_or_remove_favorite(request, slug):
     data = {'count': 0, 'status': 'deleted'}
